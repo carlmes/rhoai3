@@ -8,18 +8,26 @@ cd "$(dirname "$0")"
 
 # GPU setup: NFD + NVIDIA GPU Operator (ocp-gpu-setup README steps 2–4).
 oc apply -k ./overlays/00-gpu-operators/
-echo "Waiting for NFD and GPU Operator to install..."
-oc wait --for=condition=Available subscription/nfd -n openshift-nfd --timeout=600s
-oc wait --for=condition=Available subscription/gpu-operator-certified -n nvidia-gpu-operator --timeout=600s
+echo "Waiting for NFD Operator Subscription to be ready..."
+oc wait subscription/nfd \
+  -n openshift-nfd \
+  --for=jsonpath='{.status.state}'=AtLatestKnown \
+  --timeout=600s
+echo "Waiting for GPU Operator Subscription to be ready..."
+oc wait subscription/gpu-operator-certified \
+  -n nvidia-gpu-operator \
+  --for=jsonpath='{.status.state}'=AtLatestKnown \
+  --timeout=600s
 
 oc apply -k ./overlays/00-gpu-instances/
 
 oc apply -k ./overlays/01-operators/
 
-echo "Waiting for RHOAI operator to install..."
-oc wait csv -n redhat-ods-operator \
-  -l operators.coreos.com/rhods-operator.redhat-ods-operator="" \
-  --for=condition=Succeeded --timeout=600s
+echo "Waiting for RHOAI Operator Subscription to be ready..."
+oc wait subscription/rhods-operator \
+  -n redhat-ods-operator \
+  --for=jsonpath='{.status.state}'=AtLatestKnown \
+  --timeout=600s
 
 #oc get installplan -n kuadrant-system
 #oc patch installplan install-dnqkx -n kuadrant-system \
@@ -90,6 +98,9 @@ oc get pods -n llm-d-monitoring
 
 # Update REPLACE_WITH_CLUSTER_APPS_DOMAIN, LLM_URL path, and LLM_MODEL in instances/guidellm-benchmark/guidellm-benchmark-job.yaml before applying.
 
+echo "Applying Guidellm Benchmark..."
 oc apply -k ./overlays/10-guidellm-benchmark/
+oc wait --for=jsonpath='{.status.phase}'=Complete job/guidellm-benchmark --timeout=600s
 
+echo "Running Guidellm Benchmark..."
 oc logs -n demo-llm job/guidellm-benchmark -f

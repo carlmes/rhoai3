@@ -3,20 +3,21 @@ apiVersion: nvidia.com/v1alpha1
 metadata:
   name: gpu-driver
 spec:
-  driverType: gpu
-  repository: nvcr.io/nvidia
-  image: driver
-  version: 'sha256:b93f1aab82ceb081919f58e13a66142c5857a0a5e68e13661a3e74696434c1d1'
+  licensingConfig:
+    nlsEnabled: true
+    secretName: ''
   nodeSelector: {}
+  driverType: gpu
+  kernelModuleType: auto
+  certConfig:
+    name: ''
+  repository: nvcr.io/nvidia
+  kernelModuleConfig:
+    name: ''
   manager: {}
   repoConfig:
     name: ''
-  certConfig:
-    name: ''
-  licensingConfig:
-    nlsEnabled: true
-    name: ''
+  version: 'sha256:f8e3dc9111c5a7a0cfac73e87d03c0b7b3d1e11f3b61654cca5461847660aa2c'
+  image: driver
   virtualTopologyConfig:
-    name: ''
-  kernelModuleConfig:
     name: ''
