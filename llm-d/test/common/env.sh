@@ -2,7 +2,8 @@
 # Shared environment for llm-d feature tests.
 
 LLM_NAMESPACE="${LLM_NAMESPACE:-demo-llm}"
-LLM_MODEL="${LLM_MODEL:-RedHatAI/Qwen3-8B-FP8-dynamic}"
+#LLM_MODEL="${LLM_MODEL:-RedHatAI/Qwen3-8B-FP8-dynamic}"
+LLM_MODEL="${LLM_MODEL:-Qwen/Qwen3-0.6B}"
 # Set CLEANUP_LLM=true or pass --cleanup to remove LLMInferenceService after a run.
 CLEANUP_LLM="${CLEANUP_LLM:-false}"
 
@@ -10,7 +11,8 @@ scenario_llm_model() {
   echo "${LLM_MODEL}"
 }
 MONITORING_NS="${MONITORING_NS:-llm-d-monitoring}"
-GUIDELLM_IMAGE="${GUIDELLM_IMAGE:-ghcr.io/vllm-project/guidellm@sha256:e3ad2371bfa8e42f2c3d1251b62d0d9c9706c27ae2143c8c048eb5fc6aebb558}"
+#GUIDELLM_IMAGE="${GUIDELLM_IMAGE:-ghcr.io/vllm-project/guidellm@sha256:e3ad2371bfa8e42f2c3d1251b62d0d9c9706c27ae2143c8c048eb5fc6aebb558}"
+GUIDELLM_IMAGE="${GUIDELLM_IMAGE:-ghcr.io/vllm-project/guidellm:latest}"
 
 detect_gateway_host() {
   oc get gateway openshift-ai-inference -n openshift-ingress \
@@ -45,6 +47,9 @@ scenario_llm_service() {
     03a-pd-separation|03b-pd-kv-transfer|03c-heterogeneous-pd)
       echo "qwen-pd"
       ;;
+    99-testing)
+      echo "qwen-l4"
+      ;;
     *)
       return 1
       ;;
@@ -63,6 +68,7 @@ scenario_job_name() {
     03b-pd-kv-transfer) echo "guidellm-03b-pd-kv-transfer" ;;
     03c-heterogeneous-pd) echo "guidellm-03c-heterogeneous-pd" ;;
     04a-data-parallelism) echo "guidellm-04a-data-parallelism" ;;
+    99-testing) echo "guidellm-99-testing" ;;
     *) return 1 ;;
   esac
 }
@@ -75,7 +81,7 @@ scenario_needs_deploy() {
       ;;
     00-baseline|01a-prefix-cache-routing|01b-precise-prefix-cache-routing|\
     01d-round-robin-control|02a-global-cache-indexing|03a-pd-separation|\
-    04a-data-parallelism)
+    04a-data-parallelism|99-testing)
       return 0
       ;;
     *)

@@ -1,0 +1,72 @@
+apiVersion: serving.kserve.io/v1alpha1
+kind: LLMInferenceService
+metadata:
+  name: qwen-l4
+  namespace: demo-llm
+  annotations:
+    opendatahub.io/model-type: generative
+    openshift.io/display-name: qwen-l4
+    security.opendatahub.io/enable-auth: 'false'
+spec:
+  replicas: 4
+  model:
+    uri: hf://Qwen/Qwen3-0.6B
+    name: Qwen/Qwen3-0.6B
+  router:
+    route: {}
+    gateway:
+      refs:
+        - name: openshift-ai-inference
+          namespace: openshift-ingress
+    scheduler:
+      config:
+        inline:
+          apiVersion: inference.networking.x-k8s.io/v1alpha1
+          kind: EndpointPickerConfig
+          plugins:
+            - type: active-request-scorer
+              parameters:
+                idleThreshold: 0
+                maxBusyScore: 1.0
+          schedulingProfiles:
+            - name: default
+              plugins:
+                - pluginRef: active-request-scorer
+                  weight: 1
+  template:
+    tolerations:
+      - key: nvidia.com/gpu
+        operator: Exists
+        effect: NoSchedule
+    #affinity:
+    #  podAntiAffinity:
+    #    requiredDuringSchedulingIgnoredDuringExecution:
+    #      - labelSelector:
+    #          matchLabels:
+    #            app.kubernetes.io/name: qwen-l4
+    #        topologyKey: kubernetes.io/hostname
+    containers:
+      - name: main
+        image: registry.redhat.io/rhaii-early-access/vllm-cuda-rhel9:3.5.0-ea.2
+        #image: registry.redhat.io/rhaii/vllm-cuda-rhel9:3.4.6-1791857183
+        args:
+        #  - --block-size=32
+          - --gpu-memory-utilization=0.92
+          #- --max-model-len=100000
+          - --max-model-len=40960
+          - --max-num-seqs=32
+          - --max-num-batched-tokens=32000
+          - --kv-cache-dtype=fp8
+          - --enable-prefix-caching
+          - --enable-chunked-prefill
+          - --enable-auto-tool-choice
+          - --tool-call-parser=gemma4
+        resources:
+          requests:
+            cpu: "2"
+            memory: 8Gi
+            nvidia.com/gpu: "1"
+          limits:
+            cpu: "4"
+            memory: 16Gi
+            nvidia.com/gpu: "1"

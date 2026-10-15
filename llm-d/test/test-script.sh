@@ -59,6 +59,7 @@ Scenarios:
   03b-pd-kv-transfer
   03c-heterogeneous-pd
   04a-data-parallelism
+  99-testing
 EOF
 }
 

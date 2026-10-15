@@ -66,7 +66,7 @@ oc apply -k ./overlays/08-llm-models/
 
 
 LLM_NAMESPACE=demo-llm
-LLM_NAME=qwen
+LLM_NAME=qwen-l4
 LLM_MODEL="Qwen/Qwen3-0.6B"
 GATEWAY_HOST=$(oc get gateway openshift-ai-inference -n openshift-ingress \
   -o jsonpath='{.spec.listeners[0].hostname}')

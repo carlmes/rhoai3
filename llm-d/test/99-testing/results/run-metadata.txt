@@ -1,0 +1,11 @@
+scenario_dir=/Users/carl/Development/carlmes/rhoai3/llm-d/test/99-testing
+job_name=guidellm-99-testing
+namespace=demo-llm
+pod=guidellm-99-testing-stnm7
+collected_at=2026-10-15T04:46:02Z
+gateway_host=inference-gateway.apps.ocp.mtbx6.sandbox326.opentlc.com
+llm_url=https://inference-gateway.apps.ocp.mtbx6.sandbox326.opentlc.com/demo-llm/qwen-l4
+start_time=2026-10-15T04:43:34Z
+end_time=2026-10-15T04:45:59Z
+files_copied=2
+files_failed=0
