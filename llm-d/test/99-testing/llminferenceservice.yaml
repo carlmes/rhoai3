@@ -1,17 +1,17 @@
 apiVersion: serving.kserve.io/v1alpha1
 kind: LLMInferenceService
 metadata:
-  name: qwen-l4
+  name: gemma4-31b
   namespace: demo-llm
   annotations:
     opendatahub.io/model-type: generative
-    openshift.io/display-name: qwen-l4
+    openshift.io/display-name: gemma-4-31B
     security.opendatahub.io/enable-auth: 'false'
 spec:
   replicas: 4
   model:
-    uri: hf://Qwen/Qwen3-0.6B
-    name: Qwen/Qwen3-0.6B
+    uri: hf://google/gemma-4-31B
+    name: google/gemma-4-31B
   router:
     route: {}
     gateway:
@@ -43,7 +43,7 @@ spec:
     #    requiredDuringSchedulingIgnoredDuringExecution:
     #      - labelSelector:
     #          matchLabels:
-    #            app.kubernetes.io/name: qwen-l4
+    #            app.kubernetes.io/name: gemma4-31b
     #        topologyKey: kubernetes.io/hostname
     containers:
       - name: main
@@ -52,8 +52,7 @@ spec:
         args:
         #  - --block-size=32
           - --gpu-memory-utilization=0.92
-          #- --max-model-len=100000
-          - --max-model-len=40960
+          - --max-model-len=100000
           - --max-num-seqs=32
           - --max-num-batched-tokens=32000
           - --kv-cache-dtype=fp8

@@ -16,9 +16,9 @@ spec:
         image: ghcr.io/vllm-project/guidellm:latest
         env:
           - name: LLM_URL
-            value: "https://inference-gateway.apps.ocp.mtbx6.sandbox326.opentlc.com/demo-llm/qwen-l4"
+            value: "https://inference-gateway.apps.ocp.mtbx6.sandbox326.opentlc.com/demo-llm/gemma4-31b"
           - name: LLM_MODEL
-            value: "Qwen/Qwen3-0.6B"
+            value: "google/gemma-4-31B"
           - name: HF_HOME
             value: /tmp/hf-cache
           - name: TRANSFORMERS_CACHE

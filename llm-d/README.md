@@ -12,6 +12,7 @@ For multi-cluster topology with MaaS, see [../maas/architecture/maas.md](../maas
 | GPU worker nodes | Provision per [../../ocp-gpu-setup/README.md](../../ocp-gpu-setup/README.md) step 1 |
 | cert-manager Operator | Required for gateway TLS (`oc get clusterissuer`) |
 | `ghcr-pull-secret` | In `demo-llm` namespace for GuideLLM image (if running benchmark overlay) |
+| (Optional) AWS EFS | To enable ReadWriteMany storage support in our AWS cluster, follow these instructions: https://access.redhat.com/articles/6966373 |
 
 ## Quick start
 

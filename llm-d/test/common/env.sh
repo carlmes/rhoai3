@@ -48,7 +48,7 @@ scenario_llm_service() {
       echo "qwen-pd"
       ;;
     99-testing)
-      echo "qwen-l4"
+      echo "gemma4-31b"
       ;;
     *)
       return 1

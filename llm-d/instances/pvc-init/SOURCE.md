@@ -1,0 +1,1 @@
+https://github.com/opendatahub-io/kserve/blob/odh-v3.5/docs/samples/storage/pvc-init/

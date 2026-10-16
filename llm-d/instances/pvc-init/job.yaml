@@ -1,0 +1,43 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: storage-init-gemma4-31b
+  namespace: demo-llm
+spec:
+  parallelism: 1
+  completions: 1
+  template:
+    spec:
+      automountServiceAccountToken: true
+      restartPolicy: Never
+      volumes:
+        - name: pvc
+          persistentVolumeClaim:
+            claimName: llm-models-2
+            readOnly: false
+      containers:
+        - image: quay.io/opendatahub/kserve-storage-initializer:v0.15-latest
+          name: storage-initializer
+          args:
+            - hf://google/gemma-4-31B
+            - /mnt/models
+          env:
+            - name: HF_HOME
+              value: /tmp/hf
+            - name: HF_XET_NUM_CONCURRENT_RANGE_GETS
+              value: "8"
+            - name: HF_XET_HIGH_PERFORMANCE
+              value: "True"
+            - name: HF_HUB_DISABLE_TELEMETRY
+              value: "1"
+          resources:
+            requests:
+              cpu: "1"
+              memory: "10Gi"
+            limits:
+              cpu: "1"
+              memory: "100Gi"
+          volumeMounts:
+            - name: pvc
+              mountPath: "/mnt/models"
+              readOnly: false
